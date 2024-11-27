@@ -2,6 +2,7 @@
 #define XFRAMES_WRAPPER_H
 
 #include <stdbool.h>
+#include <xframes-runner.h>
 
 #ifdef _WIN32
 #define EXPORT_API __declspec(dllexport)  // Import symbols from DLL
@@ -9,13 +10,9 @@
 #define EXPORT_API __attribute__((visibility("default")))  // For non-Windows
 #endif
 
-typedef void (*OnInitCb)();
-typedef void (*OnTextChangedCb)(int, const char*);
-typedef void (*OnComboChangedCb)(int, int);
-typedef void (*OnNumericValueChangedCb)(int, float);
-typedef void (*OnBooleanValueChangedCb)(int, bool);
-typedef void (*OnMultipleNumericValuesChangedCb)(int, float*, int numValues);
-typedef void (*OnClickCb)(int);
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 EXPORT_API void resizeWindow(const int width, const int height);
 EXPORT_API void setElement(const char* elementJson);
@@ -42,5 +39,9 @@ EXPORT_API void init(
     OnMultipleNumericValuesChangedCb onMultipleNumericValuesChanged,
     OnClickCb onClick
 );
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif // XFRAMES_WRAPPER_H

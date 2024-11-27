@@ -1,7 +1,6 @@
-#ifndef XFRAMES_H
-#define XFRAMES_H
+#ifndef XFRAMES_RUNNER_H
+#define XFRAMES_RUNNER_H
 
-#include <thread>
 #include <cstdio>
 #include <utility>
 #include <vector>
@@ -23,15 +22,17 @@
 
 #include <nlohmann/json.hpp>
 
-using OnInitCb = const std::function<void()>;
-using OnTextChangedCb = const std::function<void(int, const std::string&)>;
-using OnComboChangedCb = const std::function<void(int, int)>;
-using OnNumericValueChangedCb = const std::function<void(int, float)>;
-using OnBooleanValueChangedCb = const std::function<void(int, bool)>;
-using OnMultipleNumericValuesChangedCb = const std::function<void(int, std::vector<float>)>;
-using OnClickCb = const std::function<void(int)>;
+#include "xframes-runner.h"
 
 using json = nlohmann::json;
+
+typedef void (*OnInitCb)();
+typedef void (*OnTextChangedCb)(int, const char*);
+typedef void (*OnComboChangedCb)(int, int);
+typedef void (*OnNumericValueChangedCb)(int, float);
+typedef void (*OnBooleanValueChangedCb)(int, bool);
+typedef void (*OnMultipleNumericValuesChangedCb)(int, float*, int numValues);
+typedef void (*OnClickCb)(int);
 
 template <typename T>
 std::vector<T> JsonToVector(std::string& data);
@@ -83,13 +84,13 @@ class Runner {
         static void OnClick(int id);
 
         void SetHandlers(
-            OnInitCb& onInit,
-            OnTextChangedCb& onTextChanged,
-            OnComboChangedCb& onComboChanged,
-            OnNumericValueChangedCb& onNumericValueChanged,
-            OnBooleanValueChangedCb& onBooleanValueChanged,
-            OnMultipleNumericValuesChangedCb& onMultipleNumericValuesChanged,
-            OnClickCb& onClick
+            OnInitCb onInit,
+            OnTextChangedCb onTextChanged,
+            OnComboChangedCb onComboChanged,
+            OnNumericValueChangedCb onNumericValueChanged,
+            OnBooleanValueChangedCb onBooleanValueChanged,
+            OnMultipleNumericValuesChangedCb onMultipleNumericValuesChanged,
+            OnClickCb onClick
             );
 
         void SetRawFontDefs(std::string rawFontDefs);
@@ -98,37 +99,37 @@ class Runner {
 
         void SetRawStyleOverridesDefs(const std::string& rawStyleOverridesDefs);
 
-        void init();
+        void Init();
 
-        void run();
+        void Run();
 
-        void exit();
+        void Exit();
 
-        void resizeWindow(const int width, const int height);
+        void ResizeWindow(const int width, const int height);
 
-        void setElement(std::string& elementJsonAsString);
+        void SetElement(std::string& elementJsonAsString);
 
-        void patchElement(const int id, std::string& elementJsonAsString);
+        void PatchElement(const int id, std::string& elementJsonAsString);
 
-        void elementInternalOp(const int id, std::string& elementJsonAsString);
+        void ElementInternalOp(const int id, std::string& elementJsonAsString);
 
-        void setChildren(const int id, const std::vector<int>& childrenIds);
+        void SetChildren(const int id, const std::vector<int>& childrenIds);
 
-        void appendChild(const int parentId, const int childId);
+        void AppendChild(const int parentId, const int childId);
 
-        std::vector<int> getChildren(const int id);
+        std::vector<int> GetChildren(const int id);
 
-        std::string getAvailableFonts();
+        std::string GetAvailableFonts();
 
-        void appendTextToClippedMultiLineTextRenderer(const int id, const std::string& data);
+        void AppendTextToClippedMultiLineTextRenderer(const int id, const std::string& data);
 
-        std::string getStyle();
+        std::string GetStyle();
 
-        void patchStyle(std::string& styleDef);
+        void PatchStyle(std::string& styleDef);
 
-        void setDebug(const bool debug);
+        void SetDebug(const bool debug);
 
-        void showDebugWindow();
+        void ShowDebugWindow();
 };
 
-#endif // XFRAMES_H
+#endif // XFRAMES_RUNNER_H

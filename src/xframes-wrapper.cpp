@@ -2,88 +2,94 @@
 #include <xframes-wrapper.h>
 #include <xframes-runner.h>
 
+Runner* Runner::instance = nullptr;
+
 #ifdef __cplusplus
 extern "C" {
 #endif
 
-Runner* Runner::instance = nullptr;
-
 void resizeWindow(const int width, const int height) {
     Runner* pRunner = Runner::getInstance();
-    pRunner->resizeWindow(width, height);
+    pRunner->ResizeWindow(width, height);
 }
 
-void setElement(std::string& elementJson) {
+void setElement(const char* elementJson) {
     Runner* pRunner = Runner::getInstance();
+    std::string elementJsonString = elementJson;
 
-    pRunner->setElement(elementJson);
+    pRunner->SetElement(elementJsonString);
 }
 
-void patchElement(int id, std::string& elementJson) {
+void patchElement(int id, const char* elementJson) {
     Runner* pRunner = Runner::getInstance();
+    std::string elementJsonString = elementJson;
 
-    pRunner->patchElement(id, elementJson);
+    pRunner->PatchElement(id, elementJsonString);
 }
 
-void elementInternalOp(int id, std::string& elementJson) {
+void elementInternalOp(int id, const char* elementJson) {
     Runner* pRunner = Runner::getInstance();
+    std::string elementJsonString = elementJson;
 
-    pRunner->elementInternalOp(id, elementJson);
+    pRunner->ElementInternalOp(id, elementJsonString);
 }
 
-void setChildren(int id, std::string& childrenIds) {
+void setChildren(int id, const char* childrenIds) {
     Runner* pRunner = Runner::getInstance();
+    std::string childrenIdsString = childrenIds;
     // todo: use array of numbers instead of parsing JSON
-    pRunner->setChildren((int)id, JsonToVector<int>(childrenIds));
+    pRunner->SetChildren((int)id, JsonToVector<int>(childrenIdsString));
 }
 
 void appendChild(int parentId, int childId) {
-    auto pRunner = Runner::getInstance();
-    
-    pRunner->appendChild(parentId, childId);
-}
-
-std::string getChildren(int id) {
     Runner* pRunner = Runner::getInstance();
     
-    return IntVectorToJson(pRunner->getChildren(id)).dump();
+    pRunner->AppendChild(parentId, childId);
 }
 
-void appendTextToClippedMultiLineTextRenderer(int id, std::string& data) {
-    Runner* pRunner = Runner::getInstance();
-
-    pRunner->appendTextToClippedMultiLineTextRenderer(id, data);
-}
-
-std::string getStyle() {
+const char* getChildren(int id) {
     Runner* pRunner = Runner::getInstance();
     
-    return pRunner->getStyle();
+    return IntVectorToJson(pRunner->GetChildren(id)).dump().c_str();
 }
 
-void patchStyle(std::string& styleDef) {
+void appendTextToClippedMultiLineTextRenderer(int id, const char* data) {
+    Runner* pRunner = Runner::getInstance();
+    std::string dataString = data;
+
+    pRunner->AppendTextToClippedMultiLineTextRenderer(id, dataString);
+}
+
+const char* getStyle() {
     Runner* pRunner = Runner::getInstance();
     
-    pRunner->patchStyle(styleDef);
+    return pRunner->GetStyle().c_str();
+}
+
+void patchStyle(const char* styleDef) {
+    Runner* pRunner = Runner::getInstance();
+    std::string styleDefString = styleDef;
+    
+    pRunner->PatchStyle(styleDefString);
 }
 
 void setDebug(const bool debug) {
     Runner* pRunner = Runner::getInstance();
 
-    pRunner->setDebug(debug);
+    pRunner->SetDebug(debug);
 }
 
 void showDebugWindow() {
     Runner* pRunner = Runner::getInstance();
 
-    pRunner->showDebugWindow();
+    pRunner->ShowDebugWindow();
 }
 
 int run()
 {
     Runner* pRunner = Runner::getInstance();
 
-    pRunner->run();
+    pRunner->Run();
 
     return 0;
 }
@@ -105,17 +111,17 @@ int run()
  * [8] OnMultipleNumericValuesChanged function
  * [9] OnClick function
  */
-static void init(
+void init(
     const char* assetsBasePath,
     const char* rawFontDefinitions,
     const char* rawStyleOverrideDefinitions,
-    OnInitCb& onInit,
-    OnTextChangedCb& onTextChanged,
-    OnComboChangedCb& onComboChanged,
-    OnNumericValueChangedCb& onNumericValueChanged,
-    OnBooleanValueChangedCb& onBooleanValueChanged,
-    OnMultipleNumericValuesChangedCb& onMultipleNumericValuesChanged,
-    OnClickCb& onClick
+    OnInitCb onInit,
+    OnTextChangedCb onTextChanged,
+    OnComboChangedCb onComboChanged,
+    OnNumericValueChangedCb onNumericValueChanged,
+    OnBooleanValueChangedCb onBooleanValueChanged,
+    OnMultipleNumericValuesChangedCb onMultipleNumericValuesChanged,
+    OnClickCb onClick
     ) {
     Runner* pRunner = Runner::getInstance();
 
@@ -133,7 +139,7 @@ static void init(
         onClick
     );
 
-    pRunner->init();
+    pRunner->Init();
 
     // uiThread = std::thread(run);
     // uiThread.detach();

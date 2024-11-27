@@ -44,67 +44,67 @@ json IntSetToJson(const std::set<int>& data) {
 Runner::Runner() {};
 Runner::~Runner() {};
 
-static Runner* Runner::getInstance() {
+Runner* Runner::getInstance() {
     if (nullptr == instance) {
         instance = new Runner();
     }
     return instance;
 };
 
-static void Runner::OnInit() {
+void Runner::OnInit() {
     auto pRunner = getInstance();
 
     pRunner->m_onInit();
 };
 
-static void Runner::OnTextChange(const int id, const std::string& value) {
+void Runner::OnTextChange(const int id, const std::string& value) {
     auto pRunner = getInstance();
 
 };
 
-static void Runner::OnComboChange(const int id, const int value) {
+void Runner::OnComboChange(const int id, const int value) {
     auto pRunner = getInstance();
 
 };
 
-static void Runner::OnNumericValueChange(const int id, const float value) {
+void Runner::OnNumericValueChange(const int id, const float value) {
     auto pRunner = getInstance();
 
 };
 
-static void Runner::OnBooleanValueChange(const int id, const bool value) {
+void Runner::OnBooleanValueChange(const int id, const bool value) {
     auto pRunner = getInstance();
 
 };
 
 // todo: improve
-static void Runner::OnMultipleNumericValuesChange(const int id, const float* values, const int numValues) {
+void Runner::OnMultipleNumericValuesChange(const int id, const float* values, const int numValues) {
     auto pRunner = getInstance();
 
 
 };
 
-static void Runner::OnClick(int id) {
+void Runner::OnClick(int id) {
     auto pRunner = getInstance();
 
     pRunner->m_onClick(id);
 };
 
 void Runner::SetHandlers(
-    OnInitCb& onInit,
-    OnTextChangedCb& onTextChanged,
-    OnComboChangedCb& onComboChanged,
-    OnNumericValueChangedCb& onNumericValueChanged,
-    OnBooleanValueChangedCb& onBooleanValueChanged,
-    OnMultipleNumericValuesChangedCb& onMultipleNumericValuesChanged,
-    OnClickCb& onClick
+    OnInitCb onInit,
+    OnTextChangedCb onTextChanged,
+    OnComboChangedCb onComboChanged,
+    OnNumericValueChangedCb onNumericValueChanged,
+    OnBooleanValueChangedCb onBooleanValueChanged,
+    OnMultipleNumericValuesChangedCb onMultipleNumericValuesChanged,
+    OnClickCb onClick
     ) {
         m_onInit = [onInit](){ onInit(); };
-        m_onTextChange = [onTextChanged](int id, const std::string& value){ onTextChanged(id, value); };
+        m_onTextChange = [onTextChanged](int id, const std::string& value){ onTextChanged(id, value.c_str()); };
         m_onComboChange = [onComboChanged](int id, int value){ onComboChanged(id, value); };
         m_onNumericValueChange = [onNumericValueChanged](int id, float value){ onNumericValueChanged(id, value); };
         m_onBooleanValueChange = [onBooleanValueChanged](int id, bool value){ onBooleanValueChanged(id, value); };
-        m_onMultipleNumericValuesChange = [onMultipleNumericValuesChanged](int id, std::vector<float> values){ onMultipleNumericValuesChanged(id, values); };
+        m_onMultipleNumericValuesChange = [onMultipleNumericValuesChanged](int id, std::vector<float> values){ onMultipleNumericValuesChanged(id, values.data(), (int)values.size()); };
         m_onClick = [onClick](int id){ onClick(id); };
 };
 
@@ -120,7 +120,7 @@ void Runner::SetRawStyleOverridesDefs(const std::string& rawStyleOverridesDefs) 
     m_rawStyleOverridesDefs.emplace(rawStyleOverridesDefs);
 };
 
-void Runner::init() {
+void Runner::Init() {
     m_xframes = new XFrames("XFrames", m_rawStyleOverridesDefs);
     m_renderer = new ImPlotRenderer(
         m_xframes,
@@ -143,52 +143,52 @@ void Runner::init() {
     );
 };
 
-void Runner::run() {
+void Runner::Run() {
     m_renderer->Init();
 };
 
-void Runner::exit() const {
+void Runner::Exit() {
     // emscripten_cancel_main_loop();
     // emscripten_force_exit(0);
 };
 
-void Runner::resizeWindow(const int width, const int height) const {
+void Runner::ResizeWindow(const int width, const int height) {
     m_renderer->SetWindowSize(width, height);
 };
 
-void Runner::setElement(std::string& elementJsonAsString) const {
+void Runner::SetElement(std::string& elementJsonAsString) {
     m_xframes->QueueCreateElement(elementJsonAsString);
 };
 
-void Runner::patchElement(const int id, std::string& elementJsonAsString) const {
+void Runner::PatchElement(const int id, std::string& elementJsonAsString) {
     m_xframes->QueuePatchElement(id, elementJsonAsString);
 };
 
-void Runner::elementInternalOp(const int id, std::string& elementJsonAsString) const {
+void Runner::ElementInternalOp(const int id, std::string& elementJsonAsString) {
     m_xframes->QueueElementInternalOp(id, elementJsonAsString);
 };
 
-void Runner::setChildren(const int id, const std::vector<int>& childrenIds) const {
+void Runner::SetChildren(const int id, const std::vector<int>& childrenIds) {
     m_xframes->QueueSetChildren(id, childrenIds);
 };
 
-void Runner::appendChild(const int parentId, const int childId) const {
+void Runner::AppendChild(const int parentId, const int childId) {
     m_xframes->QueueAppendChild(parentId, childId);
 };
 
-std::vector<int> Runner::getChildren(const int id) const {
+std::vector<int> Runner::GetChildren(const int id) {
     return m_xframes->GetChildren(id);
 };
 
-std::string Runner::getAvailableFonts() const {
+std::string Runner::GetAvailableFonts() {
     return m_renderer->GetAvailableFonts().dump();
 };
 
-void Runner::appendTextToClippedMultiLineTextRenderer(const int id, const std::string& data) const {
+void Runner::AppendTextToClippedMultiLineTextRenderer(const int id, const std::string& data) {
     m_xframes->AppendTextToClippedMultiLineTextRenderer(id, data);
 };
 
-std::string Runner::getStyle() const {
+std::string Runner::GetStyle() {
     json style;
 
     style["alpha"] = m_xframes->m_appStyle.Alpha;
@@ -256,15 +256,15 @@ std::string Runner::getStyle() const {
     return style.dump();
 };
 
-void Runner::patchStyle(std::string& styleDef) const {
+void Runner::PatchStyle(std::string& styleDef) {
     m_xframes->PatchStyle(json::parse(styleDef));
 };
 
-void Runner::setDebug(const bool debug) const {
+void Runner::SetDebug(const bool debug) {
     m_xframes->SetDebug(debug);
 };
 
-void Runner::showDebugWindow() const {
+void Runner::ShowDebugWindow() {
     m_xframes->ShowDebugWindow();
 };
 

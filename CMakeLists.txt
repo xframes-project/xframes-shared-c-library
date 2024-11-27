@@ -99,8 +99,8 @@ set(SOURCES
     ${APP}/src/widget/tree_node.cpp
     ${APP}/src/widget/window.cpp
 
-    src/xframes-wrapper.c
     src/xframes-runner.cpp
+    src/xframes-wrapper.cpp
 )
 
 # Create a shared library
