@@ -1,4 +1,4 @@
-
+#include <thread>
 #include <vector>
 #include <set>
 
@@ -128,6 +128,11 @@ void Runner::Init() {
 
 void Runner::Run() {
     m_renderer->Init();
+};
+
+void Runner::StartThread() {
+    std::thread runnerThread(&Runner::Run, this);
+    runnerThread.detach();  // Detach the thread to run independently
 };
 
 void Runner::Exit() {

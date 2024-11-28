@@ -85,19 +85,6 @@ void showDebugWindow() {
     pRunner->ShowDebugWindow();
 }
 
-int run()
-{
-    Runner* pRunner = Runner::getInstance();
-
-    pRunner->Run();
-
-    return 0;
-}
-
-// std::thread uiThread;
-
-
-// std::thread nativeThread;
 
 /**
  * [0] assets base path
@@ -141,8 +128,7 @@ void init(
 
     pRunner->Init();
 
-    // uiThread = std::thread(run);
-    // uiThread.detach();
+    pRunner->StartThread();
 }
 
 #ifdef __cplusplus

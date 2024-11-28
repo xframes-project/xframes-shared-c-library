@@ -117,6 +117,8 @@ class Runner {
 
         void Run();
 
+        void StartThread();
+
         void Exit();
 
         void ResizeWindow(const int width, const int height);

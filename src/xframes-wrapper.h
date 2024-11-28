@@ -26,7 +26,6 @@ EXPORT_API const char* getStyle();
 EXPORT_API void patchStyle(const char* styleDef);
 EXPORT_API void setDebug(const bool debug);
 EXPORT_API void showDebugWindow();
-EXPORT_API int run();
 EXPORT_API void init(
     const char* assetsBasePath,
     const char* rawFontDefinitions,

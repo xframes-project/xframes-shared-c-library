@@ -1,5 +1,7 @@
 cmake_minimum_required(VERSION 3.8)
 
+set(CMAKE_BUILD_TYPE Release FORCE)
+
 set(CMAKE_GENERATOR "Ninja")
 set(VCPKG_ROOT "./vcpkg/")
 set(CMAKE_TOOLCHAIN_FILE "./vcpkg/scripts/buildsystems/vcpkg.cmake")
@@ -7,7 +9,7 @@ set(CMAKE_TOOLCHAIN_FILE "./vcpkg/scripts/buildsystems/vcpkg.cmake")
 set(VCPKG_TARGET_ARCHITECTURE "x64")
 
 # Project name and language
-project(xframes LANGUAGES C CXX)
+project(xframesshared LANGUAGES C CXX)
 
 set(CMAKE_CXX_STANDARD 20)
 
@@ -128,7 +130,7 @@ target_include_directories(${PROJECT_NAME} PRIVATE
 set_target_properties(${PROJECT_NAME} PROPERTIES
     VERSION ${MYLIBRARY_VERSION_MAJOR}.${MYLIBRARY_VERSION_MINOR}.${MYLIBRARY_VERSION_PATCH}
     SOVERSION ${MYLIBRARY_VERSION_MAJOR}
-    OUTPUT_NAME "xframes"
+    OUTPUT_NAME "xframesshared"
 )
 
 target_link_libraries(
