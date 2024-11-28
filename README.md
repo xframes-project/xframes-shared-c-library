@@ -6,6 +6,12 @@
 
 `cmake --build ./build -- /property:Configuration=Release`
 
+
+### Raspberry Pi
+
+`export VCPKG_FORCE_SYSTEM_BINARIES=1`
+`export ARM64_LINUX=1`
+
 ## Screenshots
 
 ### Windows 11
