@@ -6,8 +6,6 @@ set(CMAKE_GENERATOR "Ninja")
 set(VCPKG_ROOT "./vcpkg/")
 set(CMAKE_TOOLCHAIN_FILE "./vcpkg/scripts/buildsystems/vcpkg.cmake")
 
-set(VCPKG_TARGET_ARCHITECTURE "x64")
-
 # Project name and language
 project(xframesshared LANGUAGES C CXX)
 
@@ -28,6 +26,8 @@ if(NOT VCPKG_TARGET_TRIPLET)
         set(VCPKG_TARGET_TRIPLET "x64-osx")
     elseif(DEFINED ENV{ARM64_LINUX})
         set(VCPKG_TARGET_TRIPLET "arm64-linux")
+    elseif(DEFINED ENV{RISCV64_LINUX})
+        set(VCPKG_TARGET_TRIPLET "riscv64-linux")
     else()
         set(VCPKG_TARGET_TRIPLET "x64-linux")
     endif()
