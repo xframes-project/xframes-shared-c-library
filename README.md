@@ -9,8 +9,13 @@
 
 ### Raspberry Pi
 
-`export VCPKG_FORCE_SYSTEM_BINARIES=1`
-`export ARM64_LINUX=1`
+- `export VCPKG_FORCE_SYSTEM_BINARIES=1`
+- `export ARM64_LINUX=1`
+
+### RISC-V (Linux)
+
+- `export VCPKG_FORCE_SYSTEM_BINARIES=1`
+- `export RISCV64_LINUX=1`
 
 ## Screenshots
 
