@@ -1,5 +1,7 @@
 # xframes-shared-c-library
 
+Looking to integrate this a JVM language? Have a look at the [JNI project](https://github.com/xframes-project/xframes-jni-library).
+
 ## Building
 
 ### Windows (VS 2022)
