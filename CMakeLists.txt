@@ -1,5 +1,11 @@
 cmake_minimum_required(VERSION 3.8)
 
+option(XFRAMES_TRANSACTIONAL "Build the current handle-based schema-2 C API" ON)
+if(XFRAMES_TRANSACTIONAL)
+    include(cmake/transactions.cmake)
+    return()
+endif()
+
 set(CMAKE_BUILD_TYPE "Release" CACHE STRING "Choose the type of build.")
 
 set(CMAKE_GENERATOR "Ninja")

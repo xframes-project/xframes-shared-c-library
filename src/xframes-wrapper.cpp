@@ -43,13 +43,13 @@ void setChildren(int id, const char* childrenIds) {
 
 void appendChild(int parentId, int childId) {
     Runner* pRunner = Runner::getInstance();
-    
+
     pRunner->AppendChild(parentId, childId);
 }
 
 const char* getChildren(int id) {
     Runner* pRunner = Runner::getInstance();
-    
+
     return IntVectorToJson(pRunner->GetChildren(id)).dump().c_str();
 }
 
@@ -62,14 +62,14 @@ void appendTextToClippedMultiLineTextRenderer(int id, const char* data) {
 
 const char* getStyle() {
     Runner* pRunner = Runner::getInstance();
-    
+
     return pRunner->GetStyle().c_str();
 }
 
 void patchStyle(const char* styleDef) {
     Runner* pRunner = Runner::getInstance();
     std::string styleDefString = styleDef;
-    
+
     pRunner->PatchStyle(styleDefString);
 }
 
