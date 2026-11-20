@@ -1,7 +1,8 @@
 param(
     [string]$XFramesSource = (Join-Path $PSScriptRoot '../xframes'),
     [string]$BuildDirectory = (Join-Path $PSScriptRoot '../build/transactions'),
-    [string]$VcpkgInstalled
+    [string]$VcpkgInstalled,
+    [switch]$EnableTestHooks
 )
 $ErrorActionPreference = 'Stop'
 $repo = [IO.Path]::GetFullPath((Join-Path $PSScriptRoot '..'))
@@ -16,6 +17,7 @@ $ninja = Join-Path $installation 'Common7/IDE/CommonExtensions/Microsoft/CMake/N
 $toolchain = Join-Path $sourceRoot 'packages/dear-imgui/cpp/deps/vcpkg/scripts/buildsystems/vcpkg.cmake'
 $configure = @('-S', $repo, '-B', $buildRoot, '-G', 'Ninja', '-DXFRAMES_TRANSACTIONAL=ON', '-DCMAKE_BUILD_TYPE=Release',
     "-DCMAKE_MAKE_PROGRAM=$ninja", "-DXFRAMES_SOURCE_DIR=$sourceRoot", "-DCMAKE_TOOLCHAIN_FILE=$toolchain")
+$configure += "-DXFRAMES_TEST_HOOKS=$(if ($EnableTestHooks) { 'ON' } else { 'OFF' })"
 if ($VcpkgInstalled) {
     $configure += @('-DVCPKG_MANIFEST_INSTALL=OFF', "-DVCPKG_INSTALLED_DIR=$([IO.Path]::GetFullPath($VcpkgInstalled))")
 }

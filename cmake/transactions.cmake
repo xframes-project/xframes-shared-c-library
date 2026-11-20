@@ -4,6 +4,11 @@ if(NOT EXISTS "${XFRAMES_SOURCE_DIR}/packages/dear-imgui/cpp/app/src/xframes_com
     message(FATAL_ERROR "The XFrames checkout needs the schema-2 publication API. Update its submodule or set XFRAMES_SOURCE_DIR.")
 endif()
 project(xframesshared VERSION 0.1.0 LANGUAGES C CXX)
+option(XFRAMES_TEST_HOOKS "Expose deterministic fault injection for the integration harness (never ship)" OFF)
+if(XFRAMES_TEST_HOOKS)
+    set_property(SOURCE "${CMAKE_CURRENT_SOURCE_DIR}/src/xframes-transaction.cpp"
+        APPEND PROPERTY COMPILE_DEFINITIONS XFRAMES_TEST_HOOKS)
+endif()
 set(CMAKE_CXX_STANDARD 23)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_POSITION_INDEPENDENT_CODE ON)
