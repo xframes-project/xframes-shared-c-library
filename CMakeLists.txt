@@ -101,6 +101,7 @@ set(SOURCES
     ${APP}/src/widget/separator_text.cpp
     ${APP}/src/widget/slider.cpp
     ${APP}/src/widget/table.cpp
+    ${APP}/src/widget/virtual_table.cpp
     ${APP}/src/widget/tabs.cpp
     ${APP}/src/widget/text.cpp
     ${APP}/src/widget/text_wrap.cpp

@@ -1,6 +1,7 @@
 [submodule "xframes"]
 	path = xframes
 	url = https://github.com/xframes-project/xframes.git
+	branch = core/virtual-table
 [submodule "vcpkg"]
 	path = vcpkg
 	url = https://github.com/microsoft/vcpkg.git

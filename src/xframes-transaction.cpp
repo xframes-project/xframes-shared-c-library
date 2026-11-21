@@ -159,6 +159,9 @@ void installCallbacks(XFrames& runtime) {
         [](int id, int row, const std::string& action) { activeWindow->Event("tableAction", id, {{"row", row}, {"action", action}}); },
         [](int id, int completed, int total) { activeWindow->Event("prefetchProgress", id, {{"completed", completed}, {"total", total}}); },
         [](int id, const std::string& error) { activeWindow->Event("scriptError", id, error); });
+    runtime.SetTableRangeHandler([](int id, int first, int last) {
+        activeWindow->Event("tableRange", id, {{"first", first}, {"last", last}});
+    });
 }
 
 template<class F> const char* jsonCall(xf_surface* surface, F action) noexcept {
