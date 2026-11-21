@@ -39,7 +39,12 @@ The engine is built from the `xframes` submodule, which follows `main`. Its
 sent as props and reports the rows on screen as `tableRange` events (`first`,
 `last`), alongside the existing `tableSort` and `tableRowClick` events. A
 publication re-links only the parents whose child list changed, so the frame
-after a small change does not lay out the whole tree again.
+after a small change does not lay out the whole tree again. A commit with
+`"childLists": "changed"` carries only the child lists that changed: an omitted
+list is kept, and a created node without one has no children. The engine then
+validates and applies only what the commit names, without copying the tree.
+`xf_state` lists `"changedChildLists"` in `commitFeatures`;
+`"complete"`, the default, still requires every list.
 
 On OS close, the renderer queues `closeRequested` and retains the native surface.
 The owner must stop new work, drain publication and call `xf_destroy`, which
