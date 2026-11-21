@@ -33,6 +33,12 @@ XF_API const char* xf_frame(xf_surface* surface);
  * Screenshot completion/error arrives in the event queue. */
 XF_API int xf_window_command(xf_surface* surface, const char* command);
 XF_API const char* xf_apply(xf_surface* surface, const char* wire);
+/* Additive ABI-1 extension: forward one widget operation, such as a table's or plot's
+ * {op:"setData",...} or {op:"appendData",...}, to a live node created by xf_apply.
+ * operation is a JSON object with a string "op". Returns 1 once the widget has handled it,
+ * serialized with commits. Returns 0 and sets xf_last_error for malformed JSON, a missing op,
+ * an unknown node or a quarantined surface. Operation names a widget does not know are ignored. */
+XF_API int xf_element_op(xf_surface* surface, int id, const char* operation);
 XF_API const char* xf_state(xf_surface* surface);
 XF_API const char* xf_diagnostics(xf_surface* surface);
 /* Success proves safe release. On failure retain the handle and dependent resources. */

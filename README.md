@@ -28,6 +28,12 @@ and script-error callbacks are forwarded. `xf_frame` exposes frame/window
 diagnostics. `xf_window_command` accepts `close`, `resize` (width/height) and
 `screenshot` (path); screenshot completion includes its path and optional error.
 
+The additive ABI-1 extension `xf_element_op` forwards one widget operation (a JSON
+object with a string `op`, such as a table's or plot's `setData` or `appendData`)
+to a live node. It returns once the widget has handled the operation, serialized
+with commits, and reports malformed operations and unknown nodes through
+`xf_last_error`. Operation names a widget does not know are ignored.
+
 On OS close, the renderer queues `closeRequested` and retains the native surface.
 The owner must stop new work, drain publication and call `xf_destroy`, which
 destroys graphics resources on the renderer thread and joins it. Rendering

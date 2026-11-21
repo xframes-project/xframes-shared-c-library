@@ -374,6 +374,21 @@ const char* xf_apply(xf_surface* surface, const char* wire) {
     if (!wire) { lastError = "Null commit payload"; return nullptr; }
     return jsonCall(surface, [wire](XFrames& runtime) { return runtime.ApplyCommit(wire).ToJson(); });
 }
+int xf_element_op(xf_surface* surface, int id, const char* operation) {
+    try {
+        if (!surface || !operation) throw std::invalid_argument("Surface and operation required");
+        // The engine ignores malformed operations and unknown nodes; report them instead.
+        const auto parsed = json::parse(operation);
+        if (!parsed.is_object() || !parsed.contains("op") || !parsed["op"].is_string())
+            throw std::invalid_argument("Operation must be an object with a string op");
+        if (!surface->runtime.IsElementAlive(id)) throw std::invalid_argument("Unknown node or quarantined surface");
+        std::string payload(operation);
+        surface->runtime.QueueElementInternalOp(id, payload);
+        return 1;
+    } catch (const std::exception& error) { lastError = error.what(); }
+    catch (...) { lastError = "Element operation failed"; }
+    return 0;
+}
 const char* xf_state(xf_surface* surface) {
     return jsonCall(surface, [](XFrames& runtime) { return runtime.GetCommitState(); });
 }
