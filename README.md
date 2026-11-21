@@ -34,11 +34,12 @@ to a live node. It returns once the widget has handled the operation, serialized
 with commits, and reports malformed operations and unknown nodes through
 `xf_last_error`. Operation names a widget does not know are ignored.
 
-The engine is built from the `xframes` submodule, which follows the
-`core/virtual-table` branch. It adds a `virtual-table` element whose rows stay in
-the application: it shows a window of rows sent as props and reports the rows on
-screen as `tableRange` events (`first`, `last`), alongside the existing
-`tableSort` and `tableRowClick` events.
+The engine is built from the `xframes` submodule, which follows `main`. Its
+`virtual-table` element keeps rows in the application: it shows a window of rows
+sent as props and reports the rows on screen as `tableRange` events (`first`,
+`last`), alongside the existing `tableSort` and `tableRowClick` events. A
+publication re-links only the parents whose child list changed, so the frame
+after a small change does not lay out the whole tree again.
 
 On OS close, the renderer queues `closeRequested` and retains the native surface.
 The owner must stop new work, drain publication and call `xf_destroy`, which
