@@ -26,6 +26,9 @@ struct WindowState {
     std::deque<json> commands;
     std::thread thread;
     std::unique_ptr<HostedRenderer> renderer;
+    // The engine this window renders. Events carry its visible revision: the tree the
+    // frame raising them drew (XFrames::VisibleRevision).
+    XFrames* runtime = nullptr;
     std::string title;
     std::string error;
     bool ready = false;
@@ -56,7 +59,8 @@ struct WindowState {
                 return;
             }
             events.push_back({{"kind", kind}, {"nodeId", id}, {"payload", std::move(payload)},
-                {"occurredAtMs", XFrames::DiagnosticsNowMs()}});
+                {"occurredAtMs", XFrames::DiagnosticsNowMs()},
+                {"revision", std::to_string(runtime ? runtime->VisibleRevision() : 0)}});
             if (id != 0) ++widgetEvents;
         } catch (...) {
             const std::lock_guard lock(gate);
@@ -317,6 +321,7 @@ xf_surface* xf_create_window(const char* wire) {
         auto surface = std::make_unique<xf_surface>();
         surface->window = std::make_unique<WindowState>();
         auto& state = *surface->window;
+        state.runtime = &surface->runtime;
         state.title = options.title;
         state.diagnostics = options.diagnostics;
 #ifdef XFRAMES_TEST_HOOKS
@@ -420,7 +425,8 @@ const char* xf_poll_events(xf_surface* surface) {
         surface->window->events.clear();
         if (surface->window->overflow) {
             events.push_back({{"kind", "rendererError"}, {"nodeId", 0}, {"payload", "Native event queue overflow"},
-                {"occurredAtMs", XFrames::DiagnosticsNowMs()}});
+                {"occurredAtMs", XFrames::DiagnosticsNowMs()},
+                {"revision", std::to_string(surface->runtime.VisibleRevision())}});
             surface->window->overflow = false;
         }
         return events;

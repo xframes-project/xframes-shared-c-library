@@ -46,6 +46,10 @@ validates and applies only what the commit names, without copying the tree.
 `xf_state` lists `"changedChildLists"` in `commitFeatures`;
 `"complete"`, the default, still requires every list.
 
+Every event from `xf_poll_events` carries `revision`: the native revision of the
+tree it was raised in (the tree the frame raising it drew), as a decimal string.
+An owner resolves the event's meaning against that tree.
+
 On OS close, the renderer queues `closeRequested` and retains the native surface.
 The owner must stop new work, drain publication and call `xf_destroy`, which
 destroys graphics resources on the renderer thread and joins it. Rendering
