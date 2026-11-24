@@ -58,9 +58,13 @@ struct WindowState {
                 if (wakeEnabled) glfwPostEmptyEvent();
                 return;
             }
+            // A widget event is numbered by the engine while the queue lock is held, so queue
+            // order is sequence order. A commit's eventsApplied names the last one applied.
+            const uint64_t sequence = !runtime ? 0 : id != 0 ? runtime->NoteWidgetEvent(id) : runtime->LastEventSequence();
             events.push_back({{"kind", kind}, {"nodeId", id}, {"payload", std::move(payload)},
                 {"occurredAtMs", XFrames::DiagnosticsNowMs()},
-                {"revision", std::to_string(runtime ? runtime->VisibleRevision() : 0)}});
+                {"revision", std::to_string(runtime ? runtime->VisibleRevision() : 0)},
+                {"sequence", std::to_string(sequence)}});
             if (id != 0) ++widgetEvents;
         } catch (...) {
             const std::lock_guard lock(gate);
@@ -426,7 +430,8 @@ const char* xf_poll_events(xf_surface* surface) {
         if (surface->window->overflow) {
             events.push_back({{"kind", "rendererError"}, {"nodeId", 0}, {"payload", "Native event queue overflow"},
                 {"occurredAtMs", XFrames::DiagnosticsNowMs()},
-                {"revision", std::to_string(surface->runtime.VisibleRevision())}});
+                {"revision", std::to_string(surface->runtime.VisibleRevision())},
+                {"sequence", std::to_string(surface->runtime.LastEventSequence())}});
             surface->window->overflow = false;
         }
         return events;
@@ -509,6 +514,15 @@ extern "C" XF_API int xf_test_control(xf_surface* surface, const char* wire) {
                 const int count = command.at("count").get<int>();
                 if (count < 0 || count > 8192) throw std::invalid_argument("Invalid test event count");
                 for (int i = 0; i < count; ++i) state.Event("click", command.value("nodeId", 1));
+            } else if (op == "editText") {
+                // A user's edit of an input, as ImGui makes one: the widget's text changes,
+                // then its textChanged event is raised and numbered like any other.
+                const int id = command.at("nodeId").get<int>();
+                const auto value = command.at("value").get<std::string>();
+                if (!surface->runtime.IsElementAlive(id)) throw std::invalid_argument("Unknown node");
+                std::string setValue = json{{"op", "setValue"}, {"value", value}}.dump();
+                surface->runtime.QueueElementInternalOp(id, setValue);
+                state.Event("textChanged", id, value);
             } else {
                 const std::lock_guard lock(state.gate);
                 if (op == "failRender") state.failRender = true;
